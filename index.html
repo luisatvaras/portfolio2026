@@ -1,0 +1,1554 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio — Luisa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0033ff;
+            --blue-light: #4053ff;
+            --bg: #f7f4ed;
+            --text: #0a0a0a;
+            --text-muted: #888;
+            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* ── Cursor ── */
+        #cursor-dot,
+        #cursor-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #cursor-dot {
+            width: 7px;
+            height: 7px;
+            background: #fff;
+            mix-blend-mode: difference;
+            transition: transform 0.15s var(--ease);
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 1.5px solid #fff;
+            mix-blend-mode: difference;
+            opacity: 0.9;
+            transition: width 0.3s var(--ease), height 0.3s var(--ease), opacity 0.3s;
+        }
+
+        body.cursor-hover #cursor-dot  { transform: translate(-50%, -50%) scale(2.2); }
+        body.cursor-hover #cursor-ring { width: 58px; height: 58px; opacity: 1; }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.6rem 4rem;
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(247,244,237,0.96);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 1px 0 rgba(0,51,255,0.08);
+        }
+
+        .nav-logo svg {
+            width: 52px;
+            height: auto;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--blue); }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            align-items: stretch;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-left {
+            padding: 10rem 3.5rem 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: translateY(0.6rem);
+        }
+
+        .hero-right {
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 4rem 2rem 2.5rem 4rem;
+        }
+
+        .hero-right .grid {
+            width: 100%;
+            max-width: 1180px;
+            height: auto;
+            grid-template-rows: auto;
+            gap: 0.75rem;
+        }
+
+        .hero-right .project-card {
+            aspect-ratio: 1/1;
+        }
+
+        .hero-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: up 0.8s var(--ease) 0.3s forwards;
+        }
+
+        .hero-name {
+            font-size: clamp(1.75rem, 3.5vw, 3.6rem);
+            font-weight: 800;
+            line-height: 0.93;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.2rem;
+            opacity: 0;
+            transform: translateY(28px);
+            animation: up 0.9s var(--ease) 0.5s forwards;
+        }
+
+        .hero-name em {
+            font-style: normal;
+            color: var(--blue);
+        }
+
+        .hero-bio {
+            max-width: 440px;
+            font-size: 0.88rem;
+            font-weight: 400;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: up 0.9s var(--ease) 0.7s forwards;
+        }
+
+        .hero-scroll {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            animation: up 0.9s var(--ease) 1s forwards;
+        }
+
+        .hero-scroll-line {
+            width: 52px;
+            height: 1px;
+            background: var(--text-muted);
+        }
+
+        .hero-scroll span {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* ── Section chrome ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--blue);
+            white-space: nowrap;
+        }
+
+        .section-rule {
+            flex: 1;
+            height: 1px;
+            background: rgba(0,51,255,0.12);
+        }
+
+        /* ── Projects ── */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            cursor: none;
+        }
+
+        .project-bg {
+            position: absolute;
+            inset: 0;
+            transition: transform 0.9s var(--ease);
+        }
+
+        .project-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: filter 0.52s var(--ease);
+        }
+
+        .project-card:hover .project-bg img {
+            filter: sepia(1) saturate(8) hue-rotate(195deg) brightness(1.05);
+        }
+
+        .project-card:hover .project-bg {
+            transform: scale(1.04);
+        }
+
+        .project-num {
+            position: absolute;
+            top: 1.4rem;
+            left: 1.6rem;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.55);
+            z-index: 2;
+            mix-blend-mode: normal;
+        }
+
+        /* bottom info bar (visible by default) */
+        .project-base {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.6rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.45));
+            z-index: 3;
+            transition: opacity 0.4s var(--ease);
+        }
+
+        .project-card:hover .project-base { opacity: 0; }
+
+        .project-base-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .project-base-year {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.3rem;
+        }
+
+        /* overlay (slides up on hover) */
+        .project-overlay {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2.2rem;
+            z-index: 4;
+            transform: translateY(100%);
+            transition: transform 0.52s var(--ease);
+        }
+
+        .project-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent 0%, rgba(0,20,120,0.7) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .overlay-inst,
+        .overlay-title,
+        .overlay-desc,
+        .overlay-link {
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-card:hover .project-overlay { transform: translateY(0); }
+
+        .overlay-inst {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.6rem;
+        }
+
+        .overlay-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .overlay-desc {
+            font-size: 0.78rem;
+            font-weight: 400;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.78);
+            margin-bottom: 1.6rem;
+        }
+
+        .overlay-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.35);
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s;
+            width: fit-content;
+        }
+
+        .overlay-link:hover { border-color: #fff; }
+
+        /* ── About ── */
+        #about {
+            background: var(--blue);
+            position: relative;
+            overflow: hidden;
+            height: 780px;
+        }
+
+        .about-canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+        .about-text-panel {
+            position: absolute;
+            top: 0; right: 0;
+            width: 340px;
+            height: 100%;
+            background: rgba(0, 20, 180, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+        }
+
+        .about-text-panel.open {
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .about-text-close {
+            position: absolute;
+            top: 1.2rem; right: 1.4rem;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .about-text-close:hover { color: #fff; }
+
+        .about-text-body {
+            font-size: 0.82rem;
+            font-weight: 400;
+            line-height: 1.9;
+            color: rgba(255,255,255,0.85);
+            font-family: 'Montserrat', sans-serif;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .draggable-photo {
+            position: absolute;
+            width: 80px;
+            height: auto;
+            cursor: grab;
+            user-select: none;
+            filter: sepia(1) saturate(8) hue-rotate(195deg) brightness(1.05);
+            transition: filter 0.3s, box-shadow 0.2s;
+            border-radius: 1px;
+        }
+
+        .draggable-photo.hovered {
+            filter: none !important;
+            box-shadow: 0 8px 32px rgba(0,0,30,0.4);
+            transform: scale(1.8);
+        }
+
+        .draggable-photo.series-hint {
+            filter: sepia(0.5) saturate(3) hue-rotate(195deg) brightness(1.15) !important;
+        }
+
+        .draggable-photo.is-dragging {
+            cursor: grabbing;
+            box-shadow: 0 16px 48px rgba(0,0,30,0.5);
+            transition: none;
+        }
+
+        /* ── Photo viewer ── */
+        #photo-viewer {
+            position: fixed;
+            inset: 0;
+            background: transparent;
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        #photo-viewer.open { display: flex; }
+
+        .viewer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.7rem;
+            pointer-events: auto;
+        }
+
+        .viewer-img-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .viewer-counter {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+        }
+
+        .viewer-arrow {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 1.1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .viewer-arrow:hover { background: rgba(255,255,255,0.35); }
+        #photo-viewer.open .viewer-arrow { display: flex; }
+
+        #viewer-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0,0,0,0.25);
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        #viewer-close:hover { background: rgba(0,0,0,0.5); color: #fff; }
+        #photo-viewer.open #viewer-close { display: flex; }
+
+        #photo-viewer img {
+            width: auto;
+            height: auto;
+            max-width: 30vw;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 2px;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+            animation: lb-in 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+            cursor: default;
+        }
+
+        @keyframes lb-in {
+            from { opacity:0; transform:scale(0.88); }
+            to   { opacity:1; transform:scale(1); }
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 3.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(0,51,255,0.1);
+        }
+
+        .footer-email {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-email:hover { color: var(--blue); }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--blue); }
+
+        .footer-copy {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── Scroll reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Keyframes ── */
+        @keyframes up {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Project Detail Overlay ── */
+        #proj-detail-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: #0a0a0a;
+            color: #f7f4ed;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(3%);
+            transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+            overflow-y: auto;
+        }
+
+        #proj-detail-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .pdo-close {
+            position: fixed;
+            top: 2rem;
+            right: 2.5rem;
+            background: none;
+            border: none;
+            color: #f7f4ed;
+            font-size: 1.6rem;
+            cursor: none;
+            z-index: 501;
+            line-height: 1;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pdo-close:hover { opacity: 1; }
+
+        .pdo-close-label {
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .pdo-scroll {
+            min-height: 100vh;
+            padding: 5.5rem 4rem 7rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .pdo-meta {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 1.4rem;
+        }
+
+        .pdo-title {
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 800;
+            line-height: 1.1;
+            max-width: 820px;
+            margin-bottom: 2.8rem;
+        }
+
+        .pdo-rule {
+            height: 1px;
+            background: #1e1e1e;
+            margin-bottom: 3.5rem;
+        }
+
+        .pdo-gallery {
+            display: flex;
+            gap: 1.2rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 1.8rem;
+            margin-bottom: 4rem;
+            scrollbar-width: thin;
+            scrollbar-color: #222 transparent;
+        }
+
+        .pdo-gallery::-webkit-scrollbar { height: 3px; }
+        .pdo-gallery::-webkit-scrollbar-track { background: transparent; }
+        .pdo-gallery::-webkit-scrollbar-thumb { background: #333; }
+
+        .pdo-gallery img,
+        .pdo-gallery video {
+            height: 440px;
+            width: auto;
+            object-fit: cover;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            display: block;
+        }
+
+        .pdo-body {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .pdo-desc {
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.9;
+            color: #999;
+            max-width: 620px;
+        }
+
+        .pdo-side {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            min-width: 200px;
+        }
+
+        .pdo-tools-label {
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #444;
+            margin-bottom: 0.8rem;
+        }
+
+        .pdo-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pdo-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        .pdo-link {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--blue-light);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1a3aff66;
+            padding-bottom: 0.25rem;
+            transition: opacity 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .pdo-link:hover { opacity: 0.7; border-color: var(--blue-light); }
+
+        .pdo-credits {
+            margin-bottom: 2.5rem;
+        }
+
+        .pdo-credit-row {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.2rem;
+        }
+
+        .pdo-credit-label {
+            font-size: 0.48rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #3a3a3a;
+            margin-bottom: 0.2rem;
+        }
+
+        .pdo-credit-val {
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: #777;
+            line-height: 1.55;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            nav, #about, footer {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-left {
+                padding: 8rem 2rem 3rem;
+            }
+
+            .hero-right {
+                border-left: none;
+                border-top: 1px solid rgba(0,51,255,0.08);
+                padding: 3rem 2rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-logo-wrap { display: none; }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- ── Nav ── -->
+    <nav id="nav">
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 1683.78 2383.94" xmlns="http://www.w3.org/2000/svg">
+                <rect fill="#4053ff" x="197.94" y="479.94" width="224.97" height="1274.97"/>
+                <rect fill="#0033ff" x="197.94" y="1754.91" width="224.97" height="193.2"/>
+                <polygon fill="#4053ff" points="1131.39 1947.85 1131.39 1948.1 422.92 1948.1 422.92 1754.91 910.49 1754.91 910.49 1947.85 1131.39 1947.85"/>
+                <rect fill="#4053ff" x="468.42" y="477.39" width="442.06" height="199.55"/>
+                <rect fill="#4053ff" x="1131.77" y="477.39" width="440.92" height="199.55"/>
+                <rect fill="#0033ff" x="910.49" y="1754.91" width="220.91" height="192.94"/>
+                <polygon fill="#4053ff" points="1131.77 676.95 1131.77 1947.85 1131.39 1947.85 1131.39 1754.91 910.49 1754.91 910.49 676.95 1131.77 676.95"/>
+                <rect fill="#0033ff" x="910.49" y="477.39" width="221.29" height="199.55"/>
+            </svg>
+        </a>
+    </nav>
+
+    <!-- ── Hero + Projects ── -->
+    <section class="hero" id="home">
+        <div class="hero-left">
+            <p class="hero-tag">Geospatial Analyst<br>Architect<br>Photographer</p>
+            <h1 class="hero-name">Luisa<br><em>Torres Varas</em></h1>
+            <p class="hero-bio">
+                Her work navigates between big and small data, the intimate scale of lived data,
+                working at the intersection of qualitative and quantitative research, seeking to
+                make complex territorial dynamics legible and understandable at different scales.
+                In that legibility, she finds a bridge between design, research, and data-driven
+                decision-making: a tool that informs and moves toward action, in service of
+                communities and territories resisting unequal power dynamics.
+            </p>
+        </div>
+        <div class="hero-right" id="projects">
+        <div class="grid">
+
+            <!-- 01 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="BEYONDTHEDATAPOINT.png" alt="Beyond the Data Point"></div>
+                <span class="project-num">01</span>
+                <div class="project-base">
+                    <p class="project-base-title">Beyond the Data Point</p>
+                    <p class="project-base-year">2026 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">Master Thesis &nbsp;·&nbsp; IAAC &nbsp;·&nbsp; 2026</p>
+                    <h3 class="overlay-title">Beyond the Data Point: A Counter Cartography of People on the Move through Mexico's Vertical Border</h3>
+                    <p class="overlay-desc">Research focused on developing counter-mapping methodologies to spatialize migrant testimonies through LLMs, critically addressing their structural biases. The work transforms migratory narratives into forms of spatial knowledge capable of revealing invisibilized patterns of violence.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+            <!-- 02 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="quito_viz.png" alt="Quito in Transition"></div>
+                <span class="project-num">02</span>
+                <div class="project-base">
+                    <p class="project-base-title">Quito in Transition</p>
+                    <p class="project-base-year">2025 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">IAAC &nbsp;·&nbsp; 2025</p>
+                    <h3 class="overlay-title">Quito in Transition</h3>
+                    <p class="overlay-desc">Spatial analysis of urban mobility through a feminist lens, including a collaborative web map and intervention catalogue to empower women public transport users in Quito.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+            <!-- 03 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="stolen river.png" alt="Stolen River"></div>
+                <span class="project-num">03</span>
+                <div class="project-base">
+                    <p class="project-base-title">Stolen River</p>
+                    <p class="project-base-year">2025 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">IAAC &nbsp;·&nbsp; 2025</p>
+                    <h3 class="overlay-title">Stolen River: Unmasking Nile's Land Grabbed Territories</h3>
+                    <p class="overlay-desc">Satellite detection of land grabbing in the Nile basin using Python, computer vision and Sentinel imagery, visualized on an open-access interactive web platform.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+            <!-- 04 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="para gif sillas_9.png" alt="Layers of Besòs"></div>
+                <span class="project-num">04</span>
+                <div class="project-base">
+                    <p class="project-base-title">Layers of Besòs</p>
+                    <p class="project-base-year">2024 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">IAAC &nbsp;·&nbsp; 2024</p>
+                    <h3 class="overlay-title">Layers of Besòs</h3>
+                    <p class="overlay-desc">Urban research on insecurity, identity and economy in Besòs, with a public space intervention proposal using generative AI and participatory design.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+            <!-- 05 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="metabolicrift_COLOR.png" alt="Metabolic Rift"></div>
+                <span class="project-num">05</span>
+                <div class="project-base">
+                    <p class="project-base-title">Metabolic Rift</p>
+                    <p class="project-base-year">2024 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">IAAC &nbsp;·&nbsp; 2024</p>
+                    <h3 class="overlay-title">Metabolic Rift: The Ever Changing Landscape of Flooding</h3>
+                    <p class="overlay-desc">Research on flood risk associated with DANA episodes and the absorption capacity of different vegetation types in Mediterranean cities, integrating historical cartography, parametric mapping and geospatial modelling with Grasshopper.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+            <!-- 06 -->
+            <div class="project-card reveal">
+                <div class="project-bg"><img src="https://blog.iaac.net/wp-content/uploads/2024/12/Unmasking-U.S.-Votes.jpg" alt="AP Votecast Analysis"></div>
+                <span class="project-num">06</span>
+                <div class="project-base">
+                    <p class="project-base-title">Unmasking U.S. Votes</p>
+                    <p class="project-base-year">2024 &nbsp;·&nbsp; IAAC</p>
+                </div>
+                <div class="project-overlay">
+                    <p class="overlay-inst">IAAC &nbsp;·&nbsp; 2024</p>
+                    <h3 class="overlay-title">Unmasking U.S. Votes: AP Votecast Analysis</h3>
+                    <p class="overlay-desc">Python-based analysis of AP Votecast exit survey data from the 2024 U.S. presidential primaries, uncovering voter behavior patterns across demographics, political affiliation, and key issues.</p>
+                    <a href="#" class="overlay-link">View project →</a>
+                </div>
+            </div>
+
+        </div>
+        </div><!-- .hero-right -->
+    </section>
+
+    <!-- ── About ── -->
+    <section id="about">
+        <div class="about-text-panel" id="aboutTextPanel">
+            <button class="about-text-close" id="aboutTextClose">×</button>
+            <p class="about-text-body">The Ebro Delta is a unique, beautiful, and extremely fragile landscape, considered a climate change ground zero, meaning it undergoes drastic changes in short periods of time. In 15 years, 1.5 km of coastline disappeared. The photographs taken are an attempt to document this ephemeral landscape, given its vulnerability to changes in temperature and river flow, while also showing the enduring human footprint. As geologist Zalasiewicz (2014) stated, cities will be one of humanity's longest-lasting traces on the planet.</p>
+        </div>
+        <div class="about-canvas" id="aboutCanvas">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_1.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_2.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_3.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_4.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_5.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_5 (1).jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_7.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_8.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_9.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_10.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_11.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_12.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_13.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_14.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/Copy of Luisa_TorresVaras_15.jpg">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/000007.JPG">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/000026 (1).JPG">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/000030 (1).JPG">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/000033.JPG">
+            <img class="draggable-photo" data-text="delta" src="fotos/delta/000034.JPG">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2480.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2483(1).jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2483.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2484.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2485.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2488(1).jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2488.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2491.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2492.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2494.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2496.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2498.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2502.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2506.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2510.jpg">
+            <img class="draggable-photo" data-text="perros" src="fotos/perros/DSC_2511.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_6895.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_6928.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_6929.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7926.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7928.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7937.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7940.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7942.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7951 (1).jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7951.jpg">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7953.JPG">
+            <img class="draggable-photo" data-text="08mm" src="fotos/08mm/IMG_7955.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_7912.JPG">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_7914.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_7918.JPG">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_7920.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8980.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8981.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8982.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8983.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8985.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8989.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8991.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8994.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8995.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8996.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8997.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_8999.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9003.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9004.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9005.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9008.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9011.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9016.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9017.jpg">
+            <img class="draggable-photo" data-text="muertos" src="fotos/muertos/IMG_9033.jpg">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0758.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0760.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0762.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0764.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0768.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0769.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0770.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0771.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0772.JPG">
+            <img class="draggable-photo" data-text="venecia" src="fotos/venecia/IMG_0773.JPG">
+        </div>
+    </section>
+
+    <!-- ── Project Detail Overlay ── -->
+    <div id="proj-detail-overlay">
+        <button class="pdo-close" id="pdo-close">
+            <span>×</span><span class="pdo-close-label">Close</span>
+        </button>
+        <div class="pdo-scroll">
+            <p class="pdo-meta" id="pdo-meta"></p>
+            <h2 class="pdo-title" id="pdo-title"></h2>
+            <div class="pdo-rule"></div>
+            <div class="pdo-gallery" id="pdo-gallery"></div>
+            <div class="pdo-body">
+                <p class="pdo-desc" id="pdo-desc"></p>
+                <div class="pdo-side">
+                    <div class="pdo-credits" id="pdo-credits"></div>
+                    <div>
+                        <p class="pdo-tools-label">Tools &amp; Methods</p>
+                        <div class="pdo-tools" id="pdo-tools"></div>
+                    </div>
+                    <a href="#" class="pdo-link" id="pdo-link" target="_blank">View full project →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Photo viewer ── -->
+    <div id="photo-viewer">
+        <div class="viewer-content">
+            <div class="viewer-img-row" style="position:relative;">
+                <button class="viewer-arrow" id="viewer-prev">&#8592;</button>
+                <div style="position:relative;">
+                    <img id="viewer-img" src="" alt="">
+                    <button id="viewer-close">&#10005;</button>
+                </div>
+                <button class="viewer-arrow" id="viewer-next">&#8594;</button>
+            </div>
+            <div class="viewer-counter" id="viewer-counter">1 / 1</div>
+        </div>
+    </div>
+
+    <!-- ── Footer / Contact ── -->
+    <footer id="contact">
+        <a href="mailto:luisatvaras@gmail.com" class="footer-email">luisatvaras@gmail.com</a>
+        <ul class="footer-links">
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">CV</a></li>
+        </ul>
+        <span class="footer-copy">© 2026</span>
+    </footer>
+
+    <script>
+        // ── Custom cursor ──
+        const dot  = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top  = my + 'px';
+        });
+
+        (function tick() {
+            rx += (mx - rx) * 0.11;
+            ry += (my - ry) * 0.11;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(tick);
+        })();
+
+        document.querySelectorAll('a, .project-card').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // ── Nav on scroll ──
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // ── Scroll reveal ──
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 90);
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+
+        // ── Draggable photos ──
+        const canvas = document.getElementById('aboutCanvas');
+        const photos = [...canvas.querySelectorAll('.draggable-photo')];
+        const COLS = 5, GAP = 8, SIZE = 80, PAD = 24;
+        let topZ = 10;
+
+        // Scatter layout: distributed across panel with ~20% max overlap initially
+        function placePhotos() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const placed = [];
+
+            photos.forEach((img, i) => {
+                const iw = SIZE;
+                const ih = SIZE; // estimate before load; updated after
+                const maxOverlap = 0.20;
+                let x, y, attempts = 0;
+
+                do {
+                    x = PAD + Math.random() * (W - iw - PAD * 2);
+                    y = PAD + Math.random() * (H - ih - PAD * 2);
+                    attempts++;
+
+                    const tooMuch = placed.some(p => {
+                        const ox = Math.max(0, Math.min(x + iw, p.x + p.w) - Math.max(x, p.x));
+                        const oy = Math.max(0, Math.min(y + ih, p.y + p.h) - Math.max(y, p.y));
+                        const overlapArea = ox * oy;
+                        return overlapArea > maxOverlap * iw * ih;
+                    });
+
+                    if (!tooMuch || attempts > 80) break;
+                } while (true);
+
+                placed.push({ x, y, w: iw, h: ih });
+                img.style.left = x + 'px';
+                img.style.top  = y + 'px';
+                img.style.zIndex = i + 1;
+            });
+        }
+
+        // Run after images have width info
+        window.addEventListener('load', placePhotos);
+        placePhotos();
+
+        let active = null, offX = 0, offY = 0, didDrag = false;
+
+        photos.forEach(img => {
+            img.addEventListener('mousedown', e => {
+                e.preventDefault();
+                active = img;
+                didDrag = false;
+                offX = e.clientX - img.getBoundingClientRect().left;
+                offY = e.clientY - img.getBoundingClientRect().top;
+                img.classList.add('is-dragging');
+                img.style.zIndex = ++topZ;
+            });
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!active) return;
+            didDrag = true;
+            const rect = canvas.getBoundingClientRect();
+            let x = e.clientX - rect.left - offX;
+            let y = e.clientY - rect.top  - offY;
+            x = Math.max(0, Math.min(rect.width  - active.offsetWidth,  x));
+            y = Math.max(0, Math.min(rect.height - active.offsetHeight, y));
+            active.style.left = x + 'px';
+            active.style.top  = y + 'px';
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (active) active.classList.remove('is-dragging');
+            active = null;
+        });
+
+        // ── Photo viewer + text panel ──
+        const textPanel  = document.getElementById('aboutTextPanel');
+        const textClose  = document.getElementById('aboutTextClose');
+        const textBody   = textPanel.querySelector('.about-text-body');
+        const viewer     = document.getElementById('photo-viewer');
+        const viewerImg  = document.getElementById('viewer-img');
+        const viewerPrev = document.getElementById('viewer-prev');
+        const viewerNext = document.getElementById('viewer-next');
+        const viewerCounter = document.getElementById('viewer-counter');
+        let currentSeries = [], currentIndex = 0;
+
+        function showPhoto(index) {
+            currentIndex = (index + currentSeries.length) % currentSeries.length;
+            const img = currentSeries[currentIndex];
+            viewerImg.src = img.src;
+            const isLandscape = img.naturalWidth > img.naturalHeight;
+            viewerImg.style.maxWidth  = isLandscape ? '50vw' : '30vw';
+            viewerImg.style.maxHeight = '80vh';
+            viewerCounter.textContent = `${currentIndex + 1} / ${currentSeries.length}`;
+        }
+
+        viewerPrev.addEventListener('click', e => { e.stopPropagation(); showPhoto(currentIndex - 1); });
+        viewerNext.addEventListener('click', e => { e.stopPropagation(); showPhoto(currentIndex + 1); });
+        document.getElementById('viewer-close').addEventListener('click', e => { e.stopPropagation(); closeAll(); });
+
+        const TEXTS = {
+            delta: "At the Edge.\n\nThe Ebro Delta is a unique, beautiful, and extremely fragile landscape, considered a climate change ground zero, meaning it undergoes drastic changes in short periods of time. In 15 years, 1.5 km of coastline disappeared. The photographs taken are an attempt to document this ephemeral landscape, given its vulnerability to changes in temperature and river flow, while also showing the enduring human footprint. As geologist Zalasiewicz (2014) stated, cities will be one of humanity's longest-lasting traces on the planet.",
+            perros: "loading",
+            '08mm': "loading 2",
+            muertos: "Desarmar la mirada.\n\nLa serie se posiciona desde una mirada anticolonial, porque hablar de lo poscolonial no tiene mucho sentido cuando la colonialidad sigue viva en nuestras formas de gobierno, en el saber y en la mirada: miradas que invisibilizan, que borran, que matan.\n\nLas fotos muestran escenas cotidianas en los pueblos donde nace la Noche de Muertos. Busco no idealizar ni folclorizar la tradición. Este trabajo fue también un reto personal: cacharme en la mirada folclorizadora que a veces reproduzco de manera automática.\n\nEl trabajo invita a descolonizar nuestras miradas, nuestras prácticas y nuestros vínculos, a dejar de abrazar la indigenidad solo cuando produce turismo o derrama económica. Implica reconocer el despojo histórico detrás de la idea de \"patria\" y construir sociedades interculturales donde los pueblos sean sujetos del diálogo, no objetos de exhibición. En las fotos se puede observar esta fricción, esta coexistencia entre el turismo y la vida diaria. También significa aprender las lenguas, las memorias y las formas de vida de quienes nos rodean, para entender mejor los mundos que compartimos y dejar de reducirlos a la artesanía o tradición.\n\nCelebremos a quienes han resistido el despojo y la invisibilización, y busquemos que sus voces estén presentes, vivas, completas y con voz propia, en el proyecto político, económico, social y cultural del país.\n\nEntretejamos la diversidad, la vida y la heterogeneidad que nos conforman, no para integrarlas, sino para convivir y reconocernos unos en otros.",
+            venecia: "loading",
+        };
+
+        function closeAll() {
+            textPanel.classList.remove('open');
+            viewer.classList.remove('open');
+            viewerImg.src = '';
+        }
+
+        photos.forEach(img => {
+            img.addEventListener('click', () => {
+                if (didDrag) return;
+                const group = img.dataset.text || 'delta';
+                currentSeries = photos.filter(p => (p.dataset.text || 'delta') === group);
+                currentIndex  = currentSeries.indexOf(img);
+                showPhoto(currentIndex);
+                viewer.classList.add('open');
+                const raw = TEXTS[group] || '';
+                const parts = raw.split('\n\n');
+                const title = parts[0].replace(/\.$/, '');
+                const body  = parts.slice(1).join('\n\n');
+                textBody.innerHTML = `<strong>${title}</strong>${body ? '\n\n' + body : ''}`.replace(/\n\n/g, '<br><br>');
+                textPanel.classList.add('open');
+            });
+        });
+
+        // ── Series hover effect ──
+        photos.forEach(img => {
+            img.addEventListener('mouseenter', () => {
+                const group = img.dataset.text;
+                photos.forEach(other => {
+                    if (other === img) {
+                        other.classList.add('hovered');
+                    } else if (other.dataset.text === group) {
+                        other.classList.add('series-hint');
+                    }
+                });
+            });
+
+            img.addEventListener('mouseleave', () => {
+                photos.forEach(other => {
+                    other.classList.remove('hovered', 'series-hint');
+                });
+            });
+        });
+
+        textClose.addEventListener('click', closeAll);
+
+        document.addEventListener('keydown', e => {
+            const pdo = document.getElementById('proj-detail-overlay');
+            if (e.key === 'Escape' && !pdo.classList.contains('open')) closeAll();
+            if (e.key === 'ArrowRight' && viewer.classList.contains('open')) showPhoto(currentIndex + 1);
+            if (e.key === 'ArrowLeft'  && viewer.classList.contains('open')) showPhoto(currentIndex - 1);
+        });
+
+        // ── Project detail overlay ──
+        const PROJECTS = {
+            '01': {
+                meta: '01 · Master Thesis · IAAC · 2026',
+                title: `Beyond the Data Point: A Counter Cartography of People on the Move through Mexico's Vertical Border`,
+                desc: `<em>"Power is not something you possess, it is something you exercise."</em> &mdash; Michel Foucault<br><br>The project examines how Mexico's border system functions as a distributed structure of violence. Over 16 years, approximately 16 million people transited Mexican territory. U.S. policy externalization and surveillance technologies created the "Vertical Border" &mdash; a control system extending throughout Mexico, operating in mobile, selective, and discriminatory ways toward racialized bodies.<br><br>The methodology transforms migrant testimonies into spatial and relational knowledge. Interviews are transcribed and segmented into narrative episodes. Claude Opus 4.7 extracts information using a human rights lens, identifying potential violations. Locations are geolocated via OpenStreetMap. Data grouped by taxonomy reveals violence patterns otherwise invisible &mdash; including pushbacks, detention, and discriminatory practices.<br><br>The final interactive webmap visualizes power as distributed rather than centralized, with four panels: relational connections, spatialized violence, demographics, and perpetrator&ndash;violence heatmaps. A verification interface allows reviewing every AI decision.`,
+                credits: [
+                    { label: 'Student',     value: 'Luisa Torres' },
+                    { label: 'Program',     value: 'Master in City & Technology 02' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2025 &ndash; 2026' },
+                    { label: 'Faculty',     value: 'Mathilde Marengo, Marziah Zad' },
+                ],
+                tools: ['Claude Opus 4.7', 'Python', 'OpenStreetMap', 'Mapbox', 'NLP'],
+                images: [
+                    'demo_beyondthedatapoint.mp4',
+                    'https://blog.iaac.net/wp-content/uploads/2026/06/BeyondTheDataPoint_LuisaTorresVaras_blogpost-1.jpg',
+                    'https://blog.iaac.net/wp-content/uploads/2026/06/ezgif.com-animated-gif-maker-46-1.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2026/06/blogpostgif_fotos-2.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2026/06/blogpostgif_fotosalbergue.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2026/06/15-2-scaled.png',
+                ],
+                link: 'https://blog.iaac.net/beyond-the-data-point-a-counter-cartography-of-people-on-the-move-through-mexicos-vertical-border/',
+            },
+            '02': {
+                meta: '02 · IAAC · 2025',
+                title: 'Quito in Transition',
+                desc: `Quito faces deep mobility inequities rooted in geography and institutional fragmentation. Bus stops are places of heightened vulnerability &mdash; 95.4% of women don't feel safe in local public spaces, and cooperativa buses account for 76.2% of reported sexual violence on public transport.<br><br>The project combines feminist framing, AI-assisted stop analysis (Google Street View API + ChatGPT, 87% accuracy on 762 stops), and a Mapatón framework to co-design interventions with communities. A statistical persona &mdash; Carmen, a 40-year-old domestic worker &mdash; grounds the analysis in lived experience, tracking safety constraints, trip-chaining demands, and after-dark mobility fears.<br><br>Deliverables: an interactive web map with bus stop typologies and participatory input, and a living feminist catalogue of tactical-to-permanent interventions drawn from global precedents. The project argues that automated analysis of the human scale must always be complemented by human insight.`,
+                credits: [
+                    { label: 'Students',    value: 'Luisa Torres, Valeria Villanueva, Josefina Ovalle' },
+                    { label: 'Program',     value: 'Master in City & Technology 01' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2024 &ndash; 2025' },
+                    { label: 'Faculty',     value: 'Mathilde Marengo, Isabel Lima, Mireia Lozano Carbassé' },
+                ],
+                tools: ['Python', 'ChatGPT', 'Google Street View API', 'QGIS', 'Mapbox'],
+                images: [
+                    'gif-quito.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/ecuador.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/map-1ok-2.png',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/Quito-in-Transition-5-1.png',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/primer-camino-carmen.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/ezgif.com-animated-gif-maker-32.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/Quito-in-Transition-28.png',
+                ],
+                link: 'https://blog.iaac.net/quito-in-transition/',
+            },
+            '03': {
+                meta: '03 · IAAC · 2025',
+                title: `Stolen River: Unmasking Nile's Land Grabbed Territories`,
+                desc: `The research investigates large-scale land acquisitions in the Nile River Basin &mdash; where foreign entities acquire agricultural land in water-stressed regions. Circular pivot irrigation patterns visible in satellite imagery serve as proxies for land and water grabbing. Countries from the Global North are predominantly the buyers while those in the Global South are the sellers. Focus narrows to Egypt's Toshka Project, where Al Dahra (UAE) and Al Rajhi (Saudi Arabia) have expanded operations significantly since 2015.<br><br>The methodology employs machine learning for pivot detection, analyzing Sentinel-2 imagery across nine years and calculating spectral indices (NDVI, NDWI, NDSI) to assess soil salinity and groundwater depletion. Key findings: 45% of globally grabbed land is in Africa; investors cultivate water-intensive alfalfa despite contractual restrictions; land acquisition contracts contain no specific mention of water rights.<br><br>Output: an interactive Stolen River Platform visualizing environmental degradation layers and corporate land networks across the basin.`,
+                credits: [
+                    { label: 'Students',    value: 'Luisa Torres, Michał Modelski, María José Schmidt' },
+                    { label: 'Program',     value: 'Master in City & Technology 01' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2024 &ndash; 2025' },
+                    { label: 'Faculty',     value: 'Jack Isles, Zac Ioannidis' },
+                ],
+                tools: ['Python', 'Leafmap', 'Roboflow', 'Google Earth Engine', 'Sentinel-2', 'QGIS'],
+                images: [
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/globe_rotation-2-1-1.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/250227_Base_World_connections-scaled.png',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/why-the-nile-01-1-scaled.jpg',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/ezgif.com-animated-gif-maker-25.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/ezgif.com-animated-gif-maker-31.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/06/ezgif.com-animated-gif-maker-24.gif',
+                ],
+                link: 'https://blog.iaac.net/stolen-river-unmasking-niles-land-grabbed-territories/',
+            },
+            '04': {
+                meta: '04 · IAAC · 2025',
+                title: `Layers of Besòs: Unfolding Barrio's Identities`,
+                desc: `El Besòs i el Maresme in Barcelona carries a complex history shaped by migration, exclusion, and resilience. Often perceived negatively, the neighborhood is a vibrant intersection of identities and cultures. Research identified insecurity as the primary challenge, unfolding into three layers: safety concerns around La Mina, economic struggles from industrial job decline, and social exclusion. Residents earn 40% less than Barcelona's city average and have experienced a 60% loss of industrial jobs since 2008.<br><br>The project employs three design themes: circular arrangements promoting social interaction, textile as local identity anchor, and informal infrastructure. AI-generated personas based on demographic and historical data are subjected to designer-led critical assessment and community validation. A parametric approach enables real-time collaborative exploration of design variations.<br><br>The final proposal features fixed seating areas (yellow zones), flexible spaces for dynamic interactions (violet zones), and woven textile canopy elements created participatorily by community stakeholders.`,
+                credits: [
+                    { label: 'Students',    value: 'Michał Modelski, Maja Mawusi, Luisa Torres' },
+                    { label: 'Program',     value: 'Master in City & Technology 01' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2024 &ndash; 2025' },
+                    { label: 'Faculty',     value: 'Eduardo Rico, Marziah Zad' },
+                ],
+                tools: ['ComfyUI', 'Generative AI', 'Grasshopper', 'Python', 'QGIS'],
+                images: [
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/Layers-of-Besos-04.png',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/HISTORY3-1-1024x582.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/SITE-ANALYSIS-2.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/Layers-of-Besos-22.png',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/ezgif.com-animated-gif-maker-9-2.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/COMFY_FINAL.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2025/03/Layers-of-Besos-47-edited.png',
+                ],
+                link: 'https://blog.iaac.net/layers-of-besos-unfolding-barrios-identities/',
+            },
+            '06': {
+                meta: '06 · IAAC · 2024',
+                title: 'Unmasking U.S. Votes: AP Votecast Analysis',
+                desc: `The 2024 U.S. presidential primaries — Iowa, New Hampshire, and South Carolina — served as the dataset for this computational analysis of voter behavior. Using AP Votecast exit survey responses, the project applies Python data science libraries to uncover demographic patterns, political affiliations, and the key concerns driving electoral outcomes: immigration, economic anxiety, and healthcare access.<br><br>Key findings reveal sharp income inequality patterns across primary states, significant gender disparities in political affiliation, and shifts in voting intention compared to 2020. The analysis positions survey data as a form of social indicator — a legible signal of collective well-being and political trust at the population scale.<br><br>The work demonstrates how computational text and tabular analysis can surface structural patterns in large civic datasets, directly applicable to social indicator development and population-scale research.`,
+                credits: [
+                    { label: 'Students',    value: 'Bruka Ulmane, Luisa Torres, María José Schmidt' },
+                    { label: 'Program',     value: 'Master in City & Technology 01' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2024 &ndash; 2025' },
+                    { label: 'Faculty',     value: 'Andre Resende' },
+                ],
+                tools: ['Python', 'pandas', 'geopandas', 'matplotlib', 'seaborn', 'plotly'],
+                images: [
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/survey-location-1024x679.png',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/DEMO1-1024x326.png',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/DEMO3-1024x521.png',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/BELIEFS1-1024x341.png',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/voting-habits.png',
+                ],
+                link: 'https://blog.iaac.net/ap-votecast-analysis/',
+            },
+            '05': {
+                meta: '05 · IAAC · 2024',
+                title: 'Metabolic Rift: The Ever Changing Landscape of Flooding',
+                desc: `Valencia's catastrophic flooding in October 2024 became the entry point for investigating DANA-induced disaster risk across Mediterranean cities. The Mediterranean Sea has risen 2.5&deg;C since 2011, enabling clouds to accumulate 7% more water per degree &mdash; Valencia received a full year's rainfall in a single day. The Albufera Lagoon, once a natural water regulator, has been reduced to less than 10% of its original size; the 1957 Plan Sur and subsequent urbanization placed vulnerable populations directly in flood zones.<br><br>The research examined six spatial indicators &mdash; topography, catchment areas, rainfall, drainage networks, flood hazard mapping, and land use &mdash; revealing that absorption capacity directly correlates with flooding risk. Three progressive filters narrowed 40 Mediterranean metropolitan areas down to four highest-risk cities: Thessalonica (FI: 17.67), Valencia (FI: 13.10), Muratpasa (FI: 6.38), and Barcelona (FI: 4.92).<br><br>Flooding patterns also reveal socioeconomic inequality: the most affected zones correlate with economically disadvantaged neighborhoods, making this a question of both climate science and environmental justice.`,
+                credits: [
+                    { label: 'Students',    value: 'Luisa Torres, María José Schmidt' },
+                    { label: 'Program',     value: 'Master in City & Technology 01' },
+                    { label: 'Institution', value: 'IAAC &middot; Barcelona' },
+                    { label: 'Year',        value: '2024 &ndash; 2025' },
+                    { label: 'Faculty',     value: 'Iacopo Neri, Laura Guimarães' },
+                ],
+                tools: ['Python', 'Google Earth Engine', 'Grasshopper', 'QGIS', 'Sentinel-2'],
+                images: [
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/contextoclima-2.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/laguna-1.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/plansur-1.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/Final-Presentation-posta-1.jpg',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/indexporcentaje-4.gif',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/image-442-1024x510.png',
+                    'https://blog.iaac.net/wp-content/uploads/2024/12/image-455.png',
+                ],
+                link: 'https://blog.iaac.net/metabolic-rift-the-ever-changing-landscape-of-flooding/',
+            },
+        };
+
+        const projDetailOverlay = document.getElementById('proj-detail-overlay');
+        const pdoClose = document.getElementById('pdo-close');
+
+        function openProject(id) {
+            const p = PROJECTS[id];
+            if (!p) return;
+            document.getElementById('pdo-meta').textContent = p.meta;
+            document.getElementById('pdo-title').textContent = p.title;
+            document.getElementById('pdo-desc').innerHTML = p.desc;
+
+            const creditsEl = document.getElementById('pdo-credits');
+            if (p.credits && p.credits.length) {
+                creditsEl.innerHTML = p.credits.map(c =>
+                    '<div class="pdo-credit-row"><span class="pdo-credit-label">' + c.label + '</span><span class="pdo-credit-val">' + c.value + '</span></div>'
+                ).join('');
+                creditsEl.style.display = 'block';
+            } else {
+                creditsEl.style.display = 'none';
+            }
+
+            const gallery = document.getElementById('pdo-gallery');
+            gallery.innerHTML = p.images.map(src =>
+                src.endsWith('.mp4') || src.endsWith('.webm')
+                    ? '<video src="' + src + '" controls autoplay muted loop playsinline></video>'
+                    : '<img src="' + src + '" alt="">'
+            ).join('');
+
+            const toolsEl = document.getElementById('pdo-tools');
+            toolsEl.innerHTML = p.tools.map(t => '<span class="pdo-tag">' + t + '</span>').join('');
+
+            const linkEl = document.getElementById('pdo-link');
+            if (p.link && p.link !== '#') {
+                linkEl.href = p.link;
+                linkEl.style.display = 'inline-block';
+            } else {
+                linkEl.style.display = 'none';
+            }
+
+            projDetailOverlay.classList.add('open');
+            projDetailOverlay.scrollTop = 0;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProject() {
+            projDetailOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        pdoClose.addEventListener('click', closeProject);
+
+        document.querySelectorAll('.overlay-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const card = link.closest('.project-card');
+                const num = card.querySelector('.project-num').textContent.trim();
+                openProject(num);
+            });
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && projDetailOverlay.classList.contains('open')) closeProject();
+        });
+    </script>
+
+</body>
+</html>
+
