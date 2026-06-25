@@ -67,6 +67,9 @@
         nav {
             position: fixed;
             inset: 0 0 auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             z-index: 200;
             display: flex;
             justify-content: space-between;
@@ -184,8 +187,7 @@
             animation: up 0.9s var(--ease) 0.7s forwards;
         }
 
-        .cv-link {
-            display: inline-block;
+        .nav-cv {
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.16em;
@@ -194,11 +196,9 @@
             text-decoration: none;
             border-bottom: 1px solid var(--blue);
             padding-bottom: 2px;
-            opacity: 0;
-            transform: translateY(18px);
-            animation: up 0.9s var(--ease) 0.85s forwards;
+            margin-right: 2.5rem;
         }
-        .cv-link:hover { opacity: 0.65; }
+        .nav-cv:hover { opacity: 0.65; }
 
         .hero-scroll {
             display: flex;
@@ -898,6 +898,7 @@
                 <rect fill="#0033ff" x="910.49" y="477.39" width="221.29" height="199.55"/>
             </svg>
         </a>
+        <a href="CV_LUISATORRESVARAS_2026_ETH.pdf" target="_blank" class="nav-cv">CV</a>
     </nav>
 
     <!-- ── Hero + Projects ── -->
@@ -913,7 +914,6 @@
                 decision-making: a tool that informs and moves toward action, in service of
                 communities and territories resisting unequal power dynamics.
             </p>
-            <a href="CV_LUISATORRESVARAS_2026_ETH.pdf" target="_blank" class="cv-link">Download CV →</a>
         </div>
         <div class="hero-right" id="projects">
         <div class="grid">
