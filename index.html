@@ -1530,9 +1530,9 @@
             const gallery = document.getElementById('pdo-gallery');
             gallery.innerHTML = p.images.map(src =>
                 src.endsWith('.mp4')
-                    ? '<video src="' + src + '" controls muted loop playsinline preload="none"></video>'
+                    ? '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>'
                     : src.endsWith('.webm')
-                    ? '<video src="' + src + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>'
+                    ? '<video src="' + src + '" poster="' + src.replace('.webm','_poster.jpg') + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>'
                     : '<img src="' + src + '" alt="">'
             ).join('');
 
