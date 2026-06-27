@@ -1369,7 +1369,7 @@
             '01': {
                 meta: '01 · Master Thesis · IAAC · 2026',
                 title: `Beyond the Data Point: A Counter Cartography of People on the Move through Mexico's Vertical Border`,
-                desc: `<em>"Power is not something you possess, it is something you exercise."</em> &mdash; Michel Foucault<br><br>The project examines how Mexico's border system functions as a distributed structure of violence. Over 16 years, approximately 16 million people transited Mexican territory. U.S. policy externalization and surveillance technologies created the "Vertical Border" &mdash; a control system extending throughout Mexico, operating in mobile, selective, and discriminatory ways toward racialized bodies.<br><br>The methodology transforms migrant testimonies into spatial and relational knowledge. Interviews are transcribed and segmented into narrative episodes. Claude Opus 4.7 extracts information using a human rights lens, identifying potential violations. Locations are geolocated via OpenStreetMap. Data grouped by taxonomy reveals violence patterns otherwise invisible &mdash; including pushbacks, detention, and discriminatory practices.<br><br>The final interactive webmap visualizes power as distributed rather than centralized, with four panels: relational connections, spatialized violence, demographics, and perpetrator&ndash;violence heatmaps. A verification interface allows reviewing every AI decision.`,
+                desc: `<em>"Power is not something you possess, it is something you exercise."</em> &mdash; Michel Foucault<br><br><strong>Problem Statement</strong><br>A distributed and relational system of violence systematically targets people on the move with impunity, while current methods fail to make its spatial and relational patterns visible.<br><br><strong>Research Question</strong><br>How can migrant testimonies be spatialized through an LLM-based pipeline, while critically accounting for structural bias, to reveal patterns of violence within Mexico's militarized vertical border?<br><br><strong>Objective</strong><br>The goal is to develop a counter-mapping methodology that transforms migrant testimonies into spatial and relational forms of knowledge, revealing hidden patterns of violence while enhancing the collective visibility and voice of people on the move and supporting NGOs' investigative, documentation, and legal advocacy efforts.<br><br>The challenge is not only to map where violence happens, but to reveal the relationships through which it is exercised.<br><br>As my case study, I used interviews conducted in September 2025 in Mexico City at Casa Tochán, a shelter that is part of REDODEM. There I interviewed two men: a young adult from El Salvador and a teenager from Nicaragua. The interview is one and a half hours long.<br><br>The methodology starts from interviews, transcribing and segmenting them into narrative episodes. Claude Opus 4.7 extracts information from each episode, identifying events, locations, actors, violence, and perpetrators, and categorizes them. Places are geolocated via OpenStreetMap and classified according to Mexico's 2020 census data into towns, villages, cities, and metropolitan areas, as well as granular categories such as train tracks, natural areas, and checkpoints.<br><br>The methodology is constituted by multiple steps, two of which are tools designed to keep humans in the loop &mdash; allowing us to analyze, validate, correct, and refine the relationships identified by the AI, ensuring that the final representation is both accurate and consistent with the original testimony.<br><br>The final interactive webmap visualizes power as distributed rather than centralized, with four panels: relational connections, spatialized violence, demographics, and perpetrator&ndash;violence heatmaps.<br><br>By blending qualitative and quantitative data in the same space, we can render relational networks to visualize different power relationships. We see clearly how power is not centralized, but distributed and circulating through a social network.<br><br>By shedding light on these experiences &mdash; which are not isolated cases &mdash; we can reveal patterns of violence: who is affected by them, where they occur, and most importantly, how they operate. I believe this approach can foster collective understanding and strengthen practices of documenting and exposing complex systems of violence that often operate with impunity.`,
                 credits: [
                     { label: 'Student',     value: 'Luisa Torres' },
                     { label: 'Program',     value: 'Master in City & Technology 02' },
@@ -1380,11 +1380,15 @@
                 tools: ['Claude Opus 4.7', 'Python', 'OpenStreetMap', 'Mapbox', 'NLP'],
                 images: [
                     'demo_beyondthedatapoint.mp4',
-                    'https://blog.iaac.net/wp-content/uploads/2026/06/BeyondTheDataPoint_LuisaTorresVaras_blogpost-1.jpg',
-                    'https://blog.iaac.net/wp-content/uploads/2026/06/ezgif.com-animated-gif-maker-46-1.gif',
+                    'mapasintro.mp4',
                     'https://blog.iaac.net/wp-content/uploads/2026/06/blogpostgif_fotos-2.gif',
                     'https://blog.iaac.net/wp-content/uploads/2026/06/blogpostgif_fotosalbergue.gif',
-                    'https://blog.iaac.net/wp-content/uploads/2026/06/15-2-scaled.png',
+                    'albergue_tira_52pt_voz_grave.webm',
+                    'BeyondTheDataPoint_LuisaTorresVaras%20(1).mp4',
+                    'BeyondTheDataPoint_LuisaTorresVaras%20(2).mp4',
+                    'BeyondTheDataPoint_LuisaTorresVaras%20(3).mp4',
+                    'SEGMENTATIONTOOL.png',
+                    'demo_verificacion_cta.mp4',
                 ],
                 link: 'https://blog.iaac.net/beyond-the-data-point-a-counter-cartography-of-people-on-the-move-through-mexicos-vertical-border/',
             },
@@ -1525,8 +1529,10 @@
 
             const gallery = document.getElementById('pdo-gallery');
             gallery.innerHTML = p.images.map(src =>
-                src.endsWith('.mp4') || src.endsWith('.webm')
+                src.endsWith('.mp4')
                     ? '<video src="' + src + '" controls autoplay muted loop playsinline></video>'
+                    : src.endsWith('.webm')
+                    ? '<video src="' + src + '" controls autoplay muted loop playsinline style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>'
                     : '<img src="' + src + '" alt="">'
             ).join('');
 
