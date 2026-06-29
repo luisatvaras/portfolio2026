@@ -1429,6 +1429,7 @@
                 ],
                 tools: ['Python', 'Leafmap', 'Roboflow', 'Google Earth Engine', 'Sentinel-2', 'QGIS'],
                 images: [
+                    'https://www.youtube.com/watch?v=-Jkd9GuPnC0',
                     'https://blog.iaac.net/wp-content/uploads/2025/06/globe_rotation-2-1-1.gif',
                     'https://blog.iaac.net/wp-content/uploads/2025/06/250227_Base_World_connections-scaled.png',
                     'https://blog.iaac.net/wp-content/uploads/2025/06/why-the-nile-01-1-scaled.jpg',
@@ -1527,13 +1528,18 @@
             }
 
             const gallery = document.getElementById('pdo-gallery');
-            gallery.innerHTML = p.images.map(src =>
-                src.endsWith('.mp4')
-                    ? '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>'
-                    : src.endsWith('.webm')
-                    ? '<video src="' + src + '" poster="' + src.replace('.webm','_poster.jpg') + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>'
-                    : '<img src="' + src + '" alt="">'
-            ).join('');
+            gallery.innerHTML = p.images.map(src => {
+                if (src.includes('youtube.com/watch') || src.includes('youtu.be/')) {
+                    const id = src.match(/[?&]v=([^&]+)/) || src.match(/youtu\.be\/([^?]+)/);
+                    const embedId = id ? id[1] : '';
+                    return '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="flex-shrink:0;"></iframe>';
+                }
+                if (src.endsWith('.mp4'))
+                    return '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>';
+                if (src.endsWith('.webm'))
+                    return '<video src="' + src + '" poster="' + src.replace('.webm','_poster.jpg') + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>';
+                return '<img src="' + src + '" alt="">';
+            }).join('');
 
             const toolsEl = document.getElementById('pdo-tools');
             toolsEl.innerHTML = p.tools.map(t => '<span class="pdo-tag">' + t + '</span>').join('');
