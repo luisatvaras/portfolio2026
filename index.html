@@ -1535,7 +1535,10 @@
                 if (src.includes('youtube.com/watch') || src.includes('youtu.be/')) {
                     const id = src.match(/[?&]v=([^&]+)/) || src.match(/youtu\.be\/([^?]+)/);
                     const embedId = id ? id[1] : '';
-                    return '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="flex-shrink:0;"></iframe>';
+                    return '<div style="position:relative;width:782px;height:440px;flex-shrink:0;cursor:pointer;" onclick="this.querySelector(\'.yt-overlay\').style.display=\'none\'">'
+                        + '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="display:block;"></iframe>'
+                        + '<div class="yt-overlay" style="position:absolute;inset:0;background:transparent;"></div>'
+                        + '</div>';
                 }
                 if (src.endsWith('.mp4'))
                     return '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>';
