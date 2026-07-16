@@ -736,6 +736,16 @@
             margin-bottom: 0;
         }
 
+        .pdo-gallery-wrap .pdo-gallery-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .pdo-gallery-wrap #pdo-prev { left: -56px; }
+        .pdo-gallery-wrap #pdo-next { right: -56px; }
+
         .pdo-gallery img,
         .pdo-gallery video,
         .pdo-gallery iframe,
@@ -750,7 +760,7 @@
         .pdo-gallery-nav {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             margin-top: 1rem;
         }
 
@@ -1170,10 +1180,10 @@
             <div class="pdo-rule"></div>
             <div class="pdo-gallery-wrap">
                 <div class="pdo-gallery" id="pdo-gallery"></div>
+                <button class="pdo-gallery-arrow" id="pdo-prev">←</button>
+                <button class="pdo-gallery-arrow" id="pdo-next">→</button>
                 <div class="pdo-gallery-nav">
-                    <button class="pdo-gallery-arrow" id="pdo-prev">←</button>
                     <span class="pdo-gallery-counter" id="pdo-counter"></span>
-                    <button class="pdo-gallery-arrow" id="pdo-next">→</button>
                 </div>
             </div>
             <div class="pdo-body">
