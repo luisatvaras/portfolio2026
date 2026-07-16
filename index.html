@@ -736,12 +736,15 @@
             margin-bottom: 0;
         }
 
-        .pdo-gallery-wrap .pdo-gallery-arrow {
+        #pdo-prev, #pdo-next {
             position: absolute;
-            top: 50%;
+            top: 220px;
             transform: translateY(-50%);
             z-index: 10;
         }
+
+        #pdo-prev { left: -60px; }
+        #pdo-next { right: -60px; }
 
         .pdo-gallery img,
         .pdo-gallery video,
@@ -758,7 +761,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
         }
 
         .pdo-gallery-arrow {
@@ -1594,21 +1597,6 @@
             return '<img src="' + src + '" alt="">';
         }
 
-        function positionArrows() {
-            const gallery = document.getElementById('pdo-gallery');
-            const prevBtn = document.getElementById('pdo-prev');
-            const nextBtn = document.getElementById('pdo-next');
-            const wrap = gallery.closest('.pdo-gallery-wrap');
-            const media = gallery.querySelector('img, video, iframe, div');
-            if (!media || !wrap) return;
-            const wrapRect = wrap.getBoundingClientRect();
-            const mediaRect = media.getBoundingClientRect();
-            const leftOffset = mediaRect.left - wrapRect.left;
-            const rightOffset = wrapRect.right - mediaRect.right;
-            prevBtn.style.left = (leftOffset + 16) + 'px';
-            nextBtn.style.right = (rightOffset + 16) + 'px';
-        }
-
         function updateGallery() {
             const gallery = document.getElementById('pdo-gallery');
             const counter = document.getElementById('pdo-counter');
@@ -1618,14 +1606,6 @@
             counter.textContent = galleryItems.length ? (galleryIndex + 1) + ' / ' + galleryItems.length : '';
             prevBtn.disabled = galleryIndex === 0;
             nextBtn.disabled = galleryIndex === galleryItems.length - 1;
-            const media = gallery.querySelector('img, video, iframe, div');
-            if (media) {
-                if (media.tagName === 'IMG' && !media.complete) {
-                    media.addEventListener('load', positionArrows, { once: true });
-                } else {
-                    setTimeout(positionArrows, 50);
-                }
-            }
         }
 
         document.getElementById('pdo-prev').addEventListener('click', () => {
