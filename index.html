@@ -723,28 +723,58 @@
             margin-bottom: 3.5rem;
         }
 
-        .pdo-gallery {
-            display: flex;
-            gap: 1.2rem;
-            overflow-x: auto;
-            padding-bottom: 1.8rem;
+        .pdo-gallery-wrap {
+            position: relative;
             margin-bottom: 4rem;
-            scrollbar-width: thin;
-            scrollbar-color: #222 transparent;
         }
 
-        .pdo-gallery::-webkit-scrollbar { height: 3px; }
-        .pdo-gallery::-webkit-scrollbar-track { background: transparent; }
-        .pdo-gallery::-webkit-scrollbar-thumb { background: #333; }
+        .pdo-gallery {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 440px;
+            margin-bottom: 0;
+        }
 
         .pdo-gallery img,
-        .pdo-gallery video {
+        .pdo-gallery video,
+        .pdo-gallery iframe,
+        .pdo-gallery > div {
             height: 440px;
             width: auto;
-            object-fit: cover;
-            scroll-snap-align: start;
-            flex-shrink: 0;
+            max-width: 100%;
+            object-fit: contain;
             display: block;
+        }
+
+        .pdo-gallery-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .pdo-gallery-arrow {
+            background: none;
+            border: none;
+            color: #f7f4ed;
+            font-size: 1.4rem;
+            cursor: none;
+            padding: 0.4rem 0.8rem;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            letter-spacing: 0.1em;
+        }
+
+        .pdo-gallery-arrow:hover { opacity: 1; }
+        .pdo-gallery-arrow:disabled { opacity: 0.15; cursor: default; }
+
+        .pdo-gallery-counter {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: #555;
+            text-transform: uppercase;
         }
 
         .pdo-body {
@@ -1134,7 +1164,14 @@
             <p class="pdo-meta" id="pdo-meta"></p>
             <h2 class="pdo-title" id="pdo-title"></h2>
             <div class="pdo-rule"></div>
-            <div class="pdo-gallery" id="pdo-gallery"></div>
+            <div class="pdo-gallery-wrap">
+                <div class="pdo-gallery" id="pdo-gallery"></div>
+                <div class="pdo-gallery-nav">
+                    <button class="pdo-gallery-arrow" id="pdo-prev">← Prev</button>
+                    <span class="pdo-gallery-counter" id="pdo-counter"></span>
+                    <button class="pdo-gallery-arrow" id="pdo-next">Next →</button>
+                </div>
+            </div>
             <div class="pdo-body">
                 <p class="pdo-desc" id="pdo-desc"></p>
                 <div class="pdo-side">
@@ -1527,6 +1564,43 @@
         const projDetailOverlay = document.getElementById('proj-detail-overlay');
         const pdoClose = document.getElementById('pdo-close');
 
+        let galleryItems = [];
+        let galleryIndex = 0;
+
+        function renderGalleryItem(src) {
+            if (src.includes('youtube.com/watch') || src.includes('youtu.be/')) {
+                const id = src.match(/[?&]v=([^&]+)/) || src.match(/youtu\.be\/([^?]+)/);
+                const embedId = id ? id[1] : '';
+                return '<div style="position:relative;width:782px;height:440px;cursor:pointer;" onclick="this.querySelector(\'.yt-overlay\').style.display=\'none\'">'
+                    + '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="display:block;"></iframe>'
+                    + '<div class="yt-overlay" style="position:absolute;inset:0;background:transparent;"></div>'
+                    + '</div>';
+            }
+            if (src.endsWith('.mp4'))
+                return '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>';
+            if (src.endsWith('.webm'))
+                return '<video src="' + src + '" poster="' + src.replace('.webm','_poster.jpg') + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;"></video>';
+            return '<img src="' + src + '" alt="">';
+        }
+
+        function updateGallery() {
+            const gallery = document.getElementById('pdo-gallery');
+            const counter = document.getElementById('pdo-counter');
+            const prevBtn = document.getElementById('pdo-prev');
+            const nextBtn = document.getElementById('pdo-next');
+            gallery.innerHTML = galleryItems.length ? renderGalleryItem(galleryItems[galleryIndex]) : '';
+            counter.textContent = galleryItems.length ? (galleryIndex + 1) + ' / ' + galleryItems.length : '';
+            prevBtn.disabled = galleryIndex === 0;
+            nextBtn.disabled = galleryIndex === galleryItems.length - 1;
+        }
+
+        document.getElementById('pdo-prev').addEventListener('click', () => {
+            if (galleryIndex > 0) { galleryIndex--; updateGallery(); }
+        });
+        document.getElementById('pdo-next').addEventListener('click', () => {
+            if (galleryIndex < galleryItems.length - 1) { galleryIndex++; updateGallery(); }
+        });
+
         function openProject(id) {
             const p = PROJECTS[id];
             if (!p) return;
@@ -1544,22 +1618,9 @@
                 creditsEl.style.display = 'none';
             }
 
-            const gallery = document.getElementById('pdo-gallery');
-            gallery.innerHTML = p.images.map(src => {
-                if (src.includes('youtube.com/watch') || src.includes('youtu.be/')) {
-                    const id = src.match(/[?&]v=([^&]+)/) || src.match(/youtu\.be\/([^?]+)/);
-                    const embedId = id ? id[1] : '';
-                    return '<div style="position:relative;width:782px;height:440px;flex-shrink:0;cursor:pointer;" onclick="this.querySelector(\'.yt-overlay\').style.display=\'none\'">'
-                        + '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="display:block;"></iframe>'
-                        + '<div class="yt-overlay" style="position:absolute;inset:0;background:transparent;"></div>'
-                        + '</div>';
-                }
-                if (src.endsWith('.mp4'))
-                    return '<video src="' + src + '" poster="' + src.replace('.mp4','_poster.jpg') + '" controls muted loop playsinline preload="none"></video>';
-                if (src.endsWith('.webm'))
-                    return '<video src="' + src + '" poster="' + src.replace('.webm','_poster.jpg') + '" controls muted loop playsinline preload="none" style="width:782px;height:440px;object-fit:contain;background:#000;flex-shrink:0;"></video>';
-                return '<img src="' + src + '" alt="">';
-            }).join('');
+            galleryItems = p.images || [];
+            galleryIndex = 0;
+            updateGallery();
 
             const toolsEl = document.getElementById('pdo-tools');
             toolsEl.innerHTML = p.tools.map(t => '<span class="pdo-tag">' + t + '</span>').join('');
