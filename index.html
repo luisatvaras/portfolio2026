@@ -747,14 +747,17 @@
         #pdo-next { right: -60px; }
 
         .pdo-gallery img,
-        .pdo-gallery video,
-        .pdo-gallery iframe,
-        .pdo-gallery > div {
+        .pdo-gallery video {
             height: 440px;
             width: auto;
             max-width: 100%;
             object-fit: contain;
             display: block;
+        }
+
+        .pdo-gallery > div {
+            width: 100%;
+            max-width: 782px;
         }
 
         .pdo-gallery-nav {
@@ -1586,8 +1589,8 @@
             if (src.includes('youtube.com/watch') || src.includes('youtu.be/')) {
                 const id = src.match(/[?&]v=([^&]+)/) || src.match(/youtu\.be\/([^?]+)/);
                 const embedId = id ? id[1] : '';
-                return '<div style="position:relative;width:782px;height:440px;cursor:pointer;" onclick="this.querySelector(\'.yt-overlay\').style.display=\'none\'">'
-                    + '<iframe width="782" height="440" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen style="display:block;"></iframe>'
+                return '<div style="position:relative;width:100%;max-width:782px;aspect-ratio:16/9;cursor:pointer;" onclick="this.querySelector(\'.yt-overlay\').style.display=\'none\'">'
+                    + '<iframe style="position:absolute;inset:0;width:100%;height:100%;" src="https://www.youtube.com/embed/' + embedId + '" frameborder="0" allowfullscreen></iframe>'
                     + '<div class="yt-overlay" style="position:absolute;inset:0;background:transparent;"></div>'
                     + '</div>';
             }
