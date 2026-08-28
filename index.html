@@ -608,17 +608,22 @@
 
         .viewer-face--back {
             position: absolute;
-            inset: 0;
-            transform: rotateY(180deg);
+            top: 50%;
+            left: 50%;
+            width: min(540px, 86vw);
+            max-height: min(72vh, 640px);
+            transform: translate(-50%, -50%) rotateY(180deg);
             background: #0a0a0a;
             color: #f7f4ed;
             border-radius: 2px;
             box-shadow: 0 20px 80px rgba(0,0,0,0.6);
             padding: 2.4rem;
             overflow-y: auto;
-            display: flex;
-            align-items: center;
+            -webkit-overflow-scrolling: touch;
+            pointer-events: none;
         }
+
+        .viewer-flip.flipped .viewer-face--back { pointer-events: auto; }
 
         .viewer-back-text {
             font-size: 0.8rem;
@@ -1056,7 +1061,7 @@
             #photo-viewer img { max-width: 88vw !important; max-height: 64vh !important; }
             .viewer-arrow { width: 34px; height: 34px; font-size: 1rem; }
             #viewer-close { width: 30px; height: 30px; }
-            .viewer-face--back { padding: 1.5rem; }
+            .viewer-face--back { padding: 1.5rem; width: 88vw; max-height: 70vh; }
             .viewer-back-text { font-size: 0.76rem; line-height: 1.75; }
         }
     </style>
