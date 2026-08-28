@@ -466,15 +466,25 @@
             height: auto;
             cursor: grab;
             user-select: none;
+            -webkit-user-drag: none;
+            touch-action: none;
             filter: sepia(1) saturate(8) hue-rotate(195deg) brightness(1.05);
-            transition: filter 0.3s, box-shadow 0.2s;
+            transition: filter 0.3s, box-shadow 0.2s, transform 0.3s var(--ease);
             border-radius: 1px;
         }
 
-        .draggable-photo.hovered {
+        .draggable-photo.hovered,
+        .draggable-photo.selected {
             filter: none !important;
             box-shadow: 0 8px 32px rgba(0,0,30,0.4);
             transform: scale(1.8);
+            z-index: 999;
+        }
+
+        .draggable-photo.selected {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
+            box-shadow: 0 10px 40px rgba(0,0,30,0.55);
         }
 
         .draggable-photo.series-hint {
@@ -1495,6 +1505,80 @@
             active = null;
         });
 
+        // ── Touch: drag with finger, tap to select, tap again to open ──
+        let lastInputTouch = false;
+        let tActive = null, tStartX = 0, tStartY = 0, tMoved = false;
+
+        function selectPhoto(img) {
+            const group = img.dataset.text || 'delta';
+            photos.forEach(o => o.classList.remove('selected', 'series-hint'));
+            img.classList.add('selected');
+            photos.forEach(o => {
+                if (o !== img && (o.dataset.text || 'delta') === group) o.classList.add('series-hint');
+            });
+            img.style.zIndex = ++topZ;
+        }
+
+        function clearSelection() {
+            photos.forEach(o => o.classList.remove('selected', 'series-hint'));
+        }
+
+        photos.forEach(img => {
+            img.addEventListener('mousedown', () => { lastInputTouch = false; });
+            img.addEventListener('touchstart', e => {
+                lastInputTouch = true;
+                const t = e.touches[0];
+                tActive = img; tMoved = false; didDrag = false;
+                tStartX = t.clientX; tStartY = t.clientY;
+                const r = img.getBoundingClientRect();
+                offX = t.clientX - r.left;
+                offY = t.clientY - r.top;
+            }, { passive: true });
+        });
+
+        window.addEventListener('touchmove', e => {
+            if (!tActive) return;
+            const t = e.touches[0];
+            const dx = t.clientX - tStartX, dy = t.clientY - tStartY;
+            if (!tMoved && Math.hypot(dx, dy) < 10) return;
+            tMoved = true; didDrag = true;
+            e.preventDefault();
+            if (!tActive.classList.contains('is-dragging')) {
+                tActive.classList.add('is-dragging');
+                tActive.style.zIndex = ++topZ;
+            }
+            const rect = canvas.getBoundingClientRect();
+            let x = t.clientX - rect.left - offX;
+            let y = t.clientY - rect.top  - offY;
+            x = Math.max(0, Math.min(rect.width  - tActive.offsetWidth,  x));
+            y = Math.max(0, Math.min(rect.height - tActive.offsetHeight, y));
+            tActive.style.left = x + 'px';
+            tActive.style.top  = y + 'px';
+        }, { passive: false });
+
+        window.addEventListener('touchend', e => {
+            if (!tActive) return;
+            const img = tActive;
+            tActive = null;
+            if (tMoved) { img.classList.remove('is-dragging'); return; }
+            e.preventDefault(); // suppress the ghost click
+            if (img.classList.contains('selected')) openViewerFor(img);
+            else selectPhoto(img);
+        }, { passive: false });
+
+        canvas.addEventListener('click', e => {
+            if (e.target === canvas) clearSelection();
+        });
+
+        function openViewerFor(img) {
+            const group = img.dataset.text || 'delta';
+            currentSeries = photos.filter(p => (p.dataset.text || 'delta') === group);
+            currentIndex  = currentSeries.indexOf(img);
+            setBackText(group);
+            showPhoto(currentIndex);
+            viewer.classList.add('open');
+        }
+
         // ── Photo viewer + text panel ──
         const textPanel  = document.getElementById('aboutTextPanel');
         const textClose  = document.getElementById('aboutTextClose');
@@ -1555,17 +1639,13 @@
             viewer.classList.remove('open');
             viewerFlip.classList.remove('flipped');
             viewerImg.src = '';
+            clearSelection();
         }
 
         photos.forEach(img => {
             img.addEventListener('click', () => {
-                if (didDrag) return;
-                const group = img.dataset.text || 'delta';
-                currentSeries = photos.filter(p => (p.dataset.text || 'delta') === group);
-                currentIndex  = currentSeries.indexOf(img);
-                setBackText(group);
-                showPhoto(currentIndex);
-                viewer.classList.add('open');
+                if (didDrag || lastInputTouch) return; // touch handled in touchend
+                openViewerFor(img);
             });
         });
 
