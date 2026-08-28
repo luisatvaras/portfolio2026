@@ -1578,8 +1578,7 @@
             tActive = null;
             if (tMoved) { img.classList.remove('is-dragging', 'hovered'); reconcileHints(); return; }
             e.preventDefault(); // suppress the ghost click
-            if (img.classList.contains('selected')) openViewerFor(img);
-            else selectPhoto(img);
+            openViewerFor(img);
         }, { passive: false });
 
         canvas.addEventListener('click', e => {
