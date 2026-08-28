@@ -943,8 +943,8 @@
             #viewer-close, .pdo-gallery-arrow, .pdo-link,
             .overlay-link, .footer-email { cursor: pointer; }
             #cursor-dot, #cursor-ring { display: none; }
-            /* no hover on touch: hide both the slide-up panel and the tiny title bar */
-            .project-card .project-base { display: none; }
+            /* no hover on touch: keep the title bar visible, hide the slide-up panel (description) */
+            .project-card .project-base { opacity: 1 !important; }
             .project-card .project-overlay { display: none; }
         }
 
