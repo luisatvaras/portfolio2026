@@ -1559,7 +1559,7 @@
             tMoved = true; didDrag = true;
             e.preventDefault();
             if (!tActive.classList.contains('is-dragging')) {
-                tActive.classList.add('is-dragging');
+                tActive.classList.add('is-dragging', 'hovered');
                 hintSeriesOf(tActive);
                 tActive.style.zIndex = ++topZ;
             }
@@ -1576,7 +1576,7 @@
             if (!tActive) return;
             const img = tActive;
             tActive = null;
-            if (tMoved) { img.classList.remove('is-dragging'); reconcileHints(); return; }
+            if (tMoved) { img.classList.remove('is-dragging', 'hovered'); reconcileHints(); return; }
             e.preventDefault(); // suppress the ghost click
             if (img.classList.contains('selected')) openViewerFor(img);
             else selectPhoto(img);
