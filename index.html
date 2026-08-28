@@ -523,7 +523,7 @@
         .viewer-img-row {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: center;
         }
 
         .viewer-counter {
@@ -536,8 +536,12 @@
         }
 
         .viewer-arrow {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 6;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.4);
             color: #fff;
             font-size: 1.1rem;
             width: 40px;
@@ -552,7 +556,10 @@
             justify-content: center;
         }
 
-        .viewer-arrow:hover { background: rgba(255,255,255,0.35); }
+        #viewer-prev { left: 10px; }
+        #viewer-next { right: 10px; }
+
+        .viewer-arrow:hover { background: rgba(0,0,0,0.75); }
         #photo-viewer.open .viewer-arrow { display: flex; }
 
         #viewer-close {
