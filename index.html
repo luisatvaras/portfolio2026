@@ -523,7 +523,7 @@
         .viewer-img-row {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 1rem;
         }
 
         .viewer-counter {
@@ -536,12 +536,8 @@
         }
 
         .viewer-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 6;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
             color: #fff;
             font-size: 1.1rem;
             width: 40px;
@@ -556,10 +552,7 @@
             justify-content: center;
         }
 
-        #viewer-prev { left: 10px; }
-        #viewer-next { right: 10px; }
-
-        .viewer-arrow:hover { background: rgba(0,0,0,0.75); }
+        .viewer-arrow:hover { background: rgba(255,255,255,0.35); }
         #photo-viewer.open .viewer-arrow { display: flex; }
 
         #viewer-close {
@@ -1077,7 +1070,19 @@
             .footer-links { gap: 1.25rem; }
 
             #photo-viewer img { max-width: 88vw !important; max-height: 64vh !important; }
-            .viewer-arrow { width: 34px; height: 34px; font-size: 1rem; }
+            .viewer-arrow {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 6;
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+                background: rgba(0,0,0,0.5);
+                border-color: rgba(255,255,255,0.4);
+            }
+            #viewer-prev { left: 8px; }
+            #viewer-next { right: 8px; }
             #viewer-close { width: 30px; height: 30px; }
             .viewer-face--back { padding: 1.5rem; width: 88vw; max-height: 70vh; }
             .viewer-back-text { font-size: 0.76rem; line-height: 1.75; }
