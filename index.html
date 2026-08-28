@@ -796,7 +796,7 @@
 
         .pdo-body {
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: minmax(0, 620px) minmax(0, 1fr);
             gap: 4rem;
             align-items: start;
         }
@@ -806,6 +806,7 @@
             font-weight: 300;
             line-height: 1.9;
             color: #999;
+            width: 100%;
             max-width: 620px;
         }
 
@@ -813,7 +814,7 @@
             display: flex;
             flex-direction: column;
             gap: 2.5rem;
-            min-width: 200px;
+            min-width: 0;
         }
 
         .pdo-tools-label {
@@ -921,6 +922,11 @@
                 flex-direction: column;
                 gap: 1.5rem;
                 text-align: center;
+            }
+
+            .pdo-body {
+                grid-template-columns: 1fr;
+                gap: 3rem;
             }
         }
     </style>
