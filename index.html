@@ -575,12 +575,66 @@
             border-radius: 2px;
             box-shadow: 0 20px 80px rgba(0,0,0,0.6);
             animation: lb-in 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
-            cursor: default;
+            cursor: pointer;
+            display: block;
         }
 
         @keyframes lb-in {
             from { opacity:0; transform:scale(0.88); }
             to   { opacity:1; transform:scale(1); }
+        }
+
+        /* ── Photo flip ── */
+        .viewer-flip {
+            position: relative;
+            perspective: 1600px;
+            cursor: pointer;
+        }
+
+        .viewer-flip-inner {
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+            transform-style: preserve-3d;
+        }
+
+        .viewer-flip.flipped .viewer-flip-inner { transform: rotateY(180deg); }
+
+        .viewer-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .viewer-face--front { position: relative; }
+
+        .viewer-face--back {
+            position: absolute;
+            inset: 0;
+            transform: rotateY(180deg);
+            background: #0a0a0a;
+            color: #f7f4ed;
+            border-radius: 2px;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+            padding: 2.4rem;
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .viewer-back-text {
+            font-size: 0.8rem;
+            font-weight: 300;
+            line-height: 1.85;
+            color: rgba(255,255,255,0.88);
+        }
+
+        .viewer-back-text strong { font-weight: 700; color: #fff; }
+
+        .viewer-hint {
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
         }
 
         /* ── Footer ── */
@@ -1002,6 +1056,8 @@
             #photo-viewer img { max-width: 88vw !important; max-height: 64vh !important; }
             .viewer-arrow { width: 34px; height: 34px; font-size: 1rem; }
             #viewer-close { width: 30px; height: 30px; }
+            .viewer-face--back { padding: 1.5rem; }
+            .viewer-back-text { font-size: 0.76rem; line-height: 1.75; }
         }
     </style>
 </head>
@@ -1288,13 +1344,21 @@
         <div class="viewer-content">
             <div class="viewer-img-row" style="position:relative;">
                 <button class="viewer-arrow" id="viewer-prev">&#8592;</button>
-                <div style="position:relative;">
-                    <img id="viewer-img" src="" alt="">
+                <div class="viewer-flip" id="viewer-flip">
+                    <div class="viewer-flip-inner" id="viewer-flip-inner">
+                        <div class="viewer-face viewer-face--front">
+                            <img id="viewer-img" src="" alt="">
+                        </div>
+                        <div class="viewer-face viewer-face--back">
+                            <div class="viewer-back-text" id="viewer-back-text"></div>
+                        </div>
+                    </div>
                     <button id="viewer-close">&#10005;</button>
                 </div>
                 <button class="viewer-arrow" id="viewer-next">&#8594;</button>
             </div>
             <div class="viewer-counter" id="viewer-counter">1 / 1</div>
+            <div class="viewer-hint" id="viewer-hint">tap photo to flip</div>
         </div>
     </div>
 
@@ -1435,11 +1499,26 @@
         const viewerPrev = document.getElementById('viewer-prev');
         const viewerNext = document.getElementById('viewer-next');
         const viewerCounter = document.getElementById('viewer-counter');
+        const viewerFlip = document.getElementById('viewer-flip');
+        const viewerBackText = document.getElementById('viewer-back-text');
         let currentSeries = [], currentIndex = 0;
+
+        const renderText = str => str
+            .replace(/\n\n/g, '<br><br>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+        function setBackText(group) {
+            const raw = TEXTS[group] || '';
+            const parts = raw.split('\n\n');
+            const title = parts[0].replace(/\.$/, '').trim();
+            const body  = parts.slice(1).join('\n\n');
+            viewerBackText.innerHTML = renderText(`${title ? '**' + title + '**' : ''}${body ? '\n\n' + body : ''}`);
+        }
 
         function showPhoto(index) {
             currentIndex = (index + currentSeries.length) % currentSeries.length;
             const img = currentSeries[currentIndex];
+            viewerFlip.classList.remove('flipped');
             viewerImg.src = img.src;
             const isLandscape = img.naturalWidth > img.naturalHeight;
             viewerImg.style.maxWidth  = isLandscape ? '50vw' : '30vw';
@@ -1450,6 +1529,12 @@
         viewerPrev.addEventListener('click', e => { e.stopPropagation(); showPhoto(currentIndex - 1); });
         viewerNext.addEventListener('click', e => { e.stopPropagation(); showPhoto(currentIndex + 1); });
         document.getElementById('viewer-close').addEventListener('click', e => { e.stopPropagation(); closeAll(); });
+
+        // Tap the photo to flip it and read the description on the back
+        viewerFlip.addEventListener('click', e => {
+            if (e.target.closest('#viewer-close')) return;
+            viewerFlip.classList.toggle('flipped');
+        });
 
         const TEXTS = {
             delta: "At the Edge.\n\nThe Ebro Delta is a unique, beautiful, and extremely fragile landscape, considered a climate change ground zero, meaning it undergoes drastic changes in short periods of time. In 15 years, 1.5 km of coastline disappeared. The photographs taken are an attempt to document this ephemeral landscape, given its vulnerability to changes in temperature and river flow, while also showing the enduring human footprint. As geologist Zalasiewicz (2014) stated, cities will be one of humanity's longest-lasting traces on the planet.",
@@ -1463,6 +1548,7 @@
         function closeAll() {
             textPanel.classList.remove('open');
             viewer.classList.remove('open');
+            viewerFlip.classList.remove('flipped');
             viewerImg.src = '';
         }
 
@@ -1472,15 +1558,9 @@
                 const group = img.dataset.text || 'delta';
                 currentSeries = photos.filter(p => (p.dataset.text || 'delta') === group);
                 currentIndex  = currentSeries.indexOf(img);
+                setBackText(group);
                 showPhoto(currentIndex);
                 viewer.classList.add('open');
-                const raw = TEXTS[group] || '';
-                const parts = raw.split('\n\n');
-                const title = parts[0].replace(/\.$/, '');
-                const body  = parts.slice(1).join('\n\n');
-                const render = str => str.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>');
-                textBody.innerHTML = `<strong>${title}</strong>${body ? '\n\n' + body : ''}`.replace(/\n\n/g, '<br><br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-                textPanel.classList.add('open');
             });
         });
 
