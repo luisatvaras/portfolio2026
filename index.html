@@ -1477,6 +1477,19 @@
 
         let active = null, offX = 0, offY = 0, didDrag = false;
 
+        function hintSeriesOf(img) {
+            const group = img.dataset.text || 'delta';
+            photos.forEach(o => {
+                if (o !== img && (o.dataset.text || 'delta') === group) o.classList.add('series-hint');
+            });
+        }
+
+        function reconcileHints() {
+            photos.forEach(o => o.classList.remove('series-hint'));
+            const sel = photos.find(o => o.classList.contains('selected'));
+            if (sel) hintSeriesOf(sel);
+        }
+
         photos.forEach(img => {
             img.addEventListener('mousedown', e => {
                 e.preventDefault();
@@ -1485,6 +1498,7 @@
                 offX = e.clientX - img.getBoundingClientRect().left;
                 offY = e.clientY - img.getBoundingClientRect().top;
                 img.classList.add('is-dragging');
+                hintSeriesOf(img);
                 img.style.zIndex = ++topZ;
             });
         });
@@ -1546,6 +1560,7 @@
             e.preventDefault();
             if (!tActive.classList.contains('is-dragging')) {
                 tActive.classList.add('is-dragging');
+                hintSeriesOf(tActive);
                 tActive.style.zIndex = ++topZ;
             }
             const rect = canvas.getBoundingClientRect();
@@ -1561,7 +1576,7 @@
             if (!tActive) return;
             const img = tActive;
             tActive = null;
-            if (tMoved) { img.classList.remove('is-dragging'); return; }
+            if (tMoved) { img.classList.remove('is-dragging'); reconcileHints(); return; }
             e.preventDefault(); // suppress the ghost click
             if (img.classList.contains('selected')) openViewerFor(img);
             else selectPhoto(img);
