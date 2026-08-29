@@ -1016,6 +1016,12 @@
             /* no hover on touch: keep the title bar visible, hide the slide-up panel (description) */
             .project-card .project-base { opacity: 1 !important; }
             .project-card .project-overlay { display: none; }
+            /* tighter shadow so a dragged photo doesn't tint the ones it passes over */
+            .draggable-photo.is-dragging,
+            .draggable-photo.hovered,
+            .draggable-photo.selected {
+                box-shadow: 0 4px 14px rgba(0,0,30,0.22);
+            }
         }
 
         /* ── Phones ── */
