@@ -1509,9 +1509,14 @@
         }
 
         const canHover = window.matchMedia('(hover: hover)').matches;
+        let lastTouchTime = 0;
+        const touchActiveRecently = () => Date.now() - lastTouchTime < 900;
+        ['touchstart', 'touchmove', 'touchend'].forEach(ev =>
+            window.addEventListener(ev, () => { lastTouchTime = Date.now(); }, { passive: true }));
 
         if (canHover) photos.forEach(img => {
             img.addEventListener('mousedown', e => {
+                if (touchActiveRecently()) return;
                 e.preventDefault();
                 active = img;
                 didDrag = false;
@@ -1596,7 +1601,7 @@
             if (!tActive) return;
             const img = tActive;
             tActive = null;
-            if (tMoved) { img.classList.remove('is-dragging', 'hovered'); reconcileHints(); return; }
+            if (tMoved) { e.preventDefault(); img.classList.remove('is-dragging', 'hovered'); reconcileHints(); return; }
             e.preventDefault(); // suppress the ghost click
             openViewerFor(img);
         }, { passive: false });
@@ -1687,6 +1692,7 @@
         // ── Series hover effect (pointer devices only; touch drag has its own) ──
         if (canHover) photos.forEach(img => {
             img.addEventListener('mouseenter', () => {
+                if (touchActiveRecently()) return;
                 const group = img.dataset.text;
                 photos.forEach(other => {
                     if (other === img) {
@@ -1698,6 +1704,7 @@
             });
 
             img.addEventListener('mouseleave', () => {
+                if (touchActiveRecently()) return;
                 photos.forEach(other => {
                     other.classList.remove('hovered', 'series-hint');
                 });
