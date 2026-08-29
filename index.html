@@ -1606,6 +1606,13 @@
             openViewerFor(img);
         }, { passive: false });
 
+        window.addEventListener('touchcancel', () => {
+            if (!tActive) return;
+            tActive.classList.remove('is-dragging', 'hovered');
+            tActive = null;
+            reconcileHints();
+        }, { passive: true });
+
         canvas.addEventListener('click', e => {
             if (e.target === canvas) clearSelection();
         });
@@ -1692,21 +1699,20 @@
         // ── Series hover effect (pointer devices only; touch drag has its own) ──
         if (canHover) photos.forEach(img => {
             img.addEventListener('mouseenter', () => {
-                if (touchActiveRecently()) return;
+                if (tActive || didDrag || touchActiveRecently()) return;
                 const group = img.dataset.text;
+                img.classList.add('hovered');
                 photos.forEach(other => {
-                    if (other === img) {
-                        other.classList.add('hovered');
-                    } else if (other.dataset.text === group) {
-                        other.classList.add('series-hint');
-                    }
+                    if (other !== img && other.dataset.text === group) other.classList.add('series-hint');
                 });
             });
 
             img.addEventListener('mouseleave', () => {
-                if (touchActiveRecently()) return;
+                if (tActive || touchActiveRecently()) return;
+                const group = img.dataset.text;
+                img.classList.remove('hovered');
                 photos.forEach(other => {
-                    other.classList.remove('hovered', 'series-hint');
+                    if (other.dataset.text === group) other.classList.remove('series-hint');
                 });
             });
         });
