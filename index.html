@@ -1502,7 +1502,9 @@
             if (sel) hintSeriesOf(sel);
         }
 
-        photos.forEach(img => {
+        const canHover = window.matchMedia('(hover: hover)').matches;
+
+        if (canHover) photos.forEach(img => {
             img.addEventListener('mousedown', e => {
                 e.preventDefault();
                 active = img;
@@ -1676,8 +1678,8 @@
             });
         });
 
-        // ── Series hover effect ──
-        photos.forEach(img => {
+        // ── Series hover effect (pointer devices only; touch drag has its own) ──
+        if (canHover) photos.forEach(img => {
             img.addEventListener('mouseenter', () => {
                 const group = img.dataset.text;
                 photos.forEach(other => {
